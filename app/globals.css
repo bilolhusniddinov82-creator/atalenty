@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Each token is an "r g b" triple (no alpha) so components can apply
+     their own opacity modifier, e.g. bg-surface/10, border-border/15 —
+     the same classes used throughout the app just resolve to different
+     RGB channels per theme. */
+
+  /* Dark theme — the default */
+  :root {
+    --color-bg: 11 14 26;
+    --color-surface: 255 255 255;
+    --color-border: 255 255 255;
+    --color-text: 242 241 237;
+    --color-muted: 154 160 180;
+  }
+
+  :root.dark {
+    --color-bg: 11 14 26;
+    --color-surface: 255 255 255;
+    --color-border: 255 255 255;
+    --color-text: 242 241 237;
+    --color-muted: 154 160 180;
+  }
+
+  /* Light theme */
+  :root:not(.dark) {
+    --color-bg: 247 247 251;
+    --color-surface: 20 20 40;
+    --color-border: 20 20 40;
+    --color-text: 17 19 31;
+    --color-muted: 100 105 128;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-text transition-colors duration-300;
+  }
+
+  em {
+    font-style: italic;
+  }
+}
+
+/* Subtle film-grain overlay used behind hero content */
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
