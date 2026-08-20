@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface BaseProps {
   variant?: "primary" | "ghost";
@@ -14,7 +14,7 @@ interface LinkButtonProps extends BaseProps {
 
 interface ClickButtonProps
   extends BaseProps,
-    ButtonHTMLAttributes<HTMLButtonElement> {
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   href?: undefined;
 }
 
@@ -32,6 +32,7 @@ const variants = {
 
 export function Button(props: ButtonProps) {
   const { variant = "primary", children, className } = props;
+
   const classes = cn(base, variants[variant], className);
 
   if ("href" in props && props.href) {
@@ -42,8 +43,13 @@ export function Button(props: ButtonProps) {
     );
   }
 
-  const { variant: _v, children: _c, className: _cl, href: _h, ...rest } =
-    props as ClickButtonProps;
+  const {
+    variant: _variant,
+    children: _children,
+    className: _className,
+    href: _href,
+    ...rest
+  } = props as ClickButtonProps;
 
   return (
     <button className={classes} {...rest}>
