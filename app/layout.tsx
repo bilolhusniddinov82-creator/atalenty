@@ -1,42 +1,53 @@
-import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
-import { ThemeScript } from "@/components/ThemeScript";
-import { Providers } from "@/components/Providers";
-import "./globals.css";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["300", "400", "500", "600"],
-});
+interface BaseProps {
+  variant?: "primary" | "ghost";
+  children: ReactNode;
+  className?: string;
+}
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
-});
+interface LinkButtonProps extends BaseProps {
+  href: string;
+}
 
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  variable: "--font-plex-mono",
-  weight: ["400", "500"],
-});
+interface ClickButtonProps
+  extends BaseProps,
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  href?: undefined;
+}
 
-export const metadata: Metadata = {
-  title: "Attestly — Notarize online, in minutes",
-  description:
-    "Meet a commissioned notary over video, verify your identity, and get a certified copy in your inbox — no driving, no waiting room.",
+type ButtonProps = LinkButtonProps | ClickButtonProps;
+
+const base =
+  "inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-transform duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-seal focus-visible:outline-offset-2";
+
+const variants = {
+  primary:
+    "bg-gradient-to-br from-ink to-violet text-white shadow-[0_8px_24px_-8px_rgba(124,58,237,0.6)] hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-8px_rgba(124,58,237,0.75)]",
+  ghost:
+    "bg-surface/5 border border-border/10 text-text hover:bg-surface/10",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export function Button(props: ButtonProps) {
+  const { variant = "primary", children, className } = props;
+  const classes = cn(base, variants[variant], className);
+
+  if ("href" in props && props.href) {
+    return (
+      <Link href={props.href} className={classes}>
+        {children}
+      </Link>
+    );
+  }
+
+  const { variant: _v, children: _c, className: _cl, href: _h, ...rest } =
+    props as ClickButtonProps;
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemeScript />
-      </head>
-      <body className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} font-body antialiased`}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <button className={classes} {...rest}>
+      {children}
+    </button>
   );
 }
